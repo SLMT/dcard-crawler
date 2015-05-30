@@ -1,0 +1,34 @@
+CREATE TABLE Posts (
+	pid int primary key,
+	fourm varchar(10),
+	pinned boolean,
+	reply int,
+	created_at bigint,
+	updated_at bigint,
+	like_count int,
+	poster_gender varchar(5),
+	poster_school varchar(20),
+	poster_depart varchar(40),
+	anonymous_school boolean,
+	anonymous_depart boolean,
+	title varchar(1000),
+	content varchar(15000)
+);
+
+CREATE TABLE Comments (
+	cid int,
+	post_id int references Posts(pid),
+	like_count int,
+	hidden boolean,
+	poster_gender varchar(5),
+	poster_school varchar(20),
+	poster_depart varchar(40),
+	anonymous boolean,
+	host boolean,
+	content varchar(12000),
+	post_time bigint,
+	PRIMARY KEY (cid, post_id)
+);
+
+COPY Posts FROM '/Users/SLMT/Desktop/posts.csv' DELIMITER ',' CSV;
+COPY Comments FROM '/Users/SLMT/Desktop/comments.csv' DELIMITER ',' CSV;
