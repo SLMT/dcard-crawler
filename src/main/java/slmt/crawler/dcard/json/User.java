@@ -1,4 +1,4 @@
-package slmt.crawler.dcard.converter.json;
+package slmt.crawler.dcard.json;
 
 public class User {
 

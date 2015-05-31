@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 
 import com.alibaba.fastjson.JSON;
 
-public class MainClass {
+public class ImageSaver {
 
 	public static void main(String[] args) throws IOException {
 		int numOfPosts = 100;

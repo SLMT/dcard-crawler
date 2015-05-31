@@ -1,4 +1,4 @@
-package slmt.crawler.dcard.converter.csv;
+package slmt.crawler.dcard.csv;
 
 public class CSVComment {
 

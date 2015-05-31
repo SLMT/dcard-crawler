@@ -1,4 +1,4 @@
-package slmt.crawler.dcard.sign;
+package slmt.crawler.dcard;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -1,4 +1,4 @@
-package slmt.crawler.dcard.converter.json;
+package slmt.crawler.dcard.json;
 
 import java.util.LinkedList;
 import java.util.List;
