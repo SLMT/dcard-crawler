@@ -11,11 +11,11 @@ import java.io.OutputStreamWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import slmt.crawler.dcard.converter.csv.CSVComment;
-import slmt.crawler.dcard.converter.csv.CSVPost;
-import slmt.crawler.dcard.converter.json.Comment;
-import slmt.crawler.dcard.converter.json.Post;
-import slmt.crawler.dcard.converter.json.Version;
+import slmt.crawler.dcard.csv.CSVComment;
+import slmt.crawler.dcard.csv.CSVPost;
+import slmt.crawler.dcard.json.Comment;
+import slmt.crawler.dcard.json.Post;
+import slmt.crawler.dcard.json.Version;
 
 import com.alibaba.fastjson.JSON;
 
@@ -154,22 +154,6 @@ public class CSVConverter {
 		}
 
 		return post;
-	}
-
-	private static String loadFile(File file) throws IOException {
-		// Open input stream
-		BufferedReader in = new BufferedReader(new InputStreamReader(
-				new FileInputStream(file), "UTF-8"));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		// Read file
-		while ((inputLine = in.readLine()) != null)
-			response.append(inputLine);
-		in.close();
-
-		// To string
-		return response.toString();
 	}
 
 	private static long getDateInLong(String dateString) {

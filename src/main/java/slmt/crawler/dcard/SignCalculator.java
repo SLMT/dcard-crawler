@@ -15,9 +15,9 @@ import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicLong;
 
-import slmt.crawler.dcard.converter.json.Comment;
-import slmt.crawler.dcard.converter.json.Post;
-import slmt.crawler.dcard.converter.json.User;
+import slmt.crawler.dcard.json.Comment;
+import slmt.crawler.dcard.json.Post;
+import slmt.crawler.dcard.json.User;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
