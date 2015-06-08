@@ -5,10 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.StringTokenizer;
 
+import slmt.crawler.dcard.analyzer.Parser;
 import slmt.crawler.dcard.api.DcardForumAPI;
 import slmt.crawler.dcard.api.DcardPostAPI;
+import slmt.crawler.dcard.api.ImgurAPI;
 import slmt.crawler.dcard.json.Post;
 import slmt.crawler.dcard.json.PostInfo;
 import slmt.crawler.dcard.util.HttpUtils;
@@ -52,11 +53,11 @@ public class ImageSaver {
 						&& info.member.gender.equals("F")) {
 					Post post = DcardPostAPI.downloadPost(info.id);
 
-					List<String> urls = getImageURLs(post.version.get(0).content);
+					List<String> urls = Parser.getImageURLs(post.version.get(0).content);
 					int num = 0;
 					for (String imageUrl : urls) {
 						images.add(new ImageDownloadInfo(
-								convertToDownloadURL(imageUrl), info.id + "_"
+								ImgurAPI.convertToDownloadURL(imageUrl), info.id + "_"
 										+ num + ".jpg"));
 						num++;
 					}
@@ -73,24 +74,5 @@ public class ImageSaver {
 			IOUtils.saveToAFile(outputDir, image.fileName, in);
 		}
 		System.out.println("Downloading completed.");
-	}
-
-	private static List<String> getImageURLs(String article) {
-		List<String> list = new LinkedList<String>();
-		StringTokenizer tokenizer = new StringTokenizer(article);
-
-		while (tokenizer.hasMoreTokens()) {
-			String token = tokenizer.nextToken();
-			if (token.contains("imgur"))
-				list.add(token);
-		}
-
-		return list;
-	}
-
-	private static String convertToDownloadURL(String url) {
-		if (!url.contains("i.imgur.com"))
-			url = url.replace("imgur.com", "i.imgur.com") + ".jpg";
-		return url;
 	}
 }
