@@ -11,12 +11,31 @@ import slmt.crawler.dcard.api.DcardForumAPI;
 import slmt.crawler.dcard.api.DcardPostAPI;
 import slmt.crawler.dcard.json.Post;
 import slmt.crawler.dcard.json.PostInfo;
-import slmt.crawler.dcard.util.HttpsUtils;
+import slmt.crawler.dcard.util.HttpUtils;
 import slmt.crawler.dcard.util.IOUtils;
 
 public class ImageSaver {
 
 	public static void main(String[] args) throws IOException {
+		File outDir;
+		
+		// 檢查參數數目
+		if (args.length < 1) {
+			System.out.println("Arguments: [Output Dir]");
+			return;
+		}
+
+		// 取出參數
+		outDir = new File(args[0]);
+
+		// 檢查輸出的資料夾是否存在
+		if (!outDir.exists())
+			outDir.mkdir();
+		
+		downloadImages(outDir);
+	}
+
+	private static void downloadImages(File outputDir) throws IOException {
 		int numOfPosts = 100;
 		int hasFind = 0;
 		List<ImageDownloadInfo> images = new LinkedList<ImageDownloadInfo>();
@@ -50,8 +69,8 @@ public class ImageSaver {
 		// 下載檔案
 		System.out.println("Start downloading images...");
 		for (ImageDownloadInfo image : images) {
-			InputStream in = HttpsUtils.constructInputStream(image.url);
-			IOUtils.saveToAFile(new File("images"), image.fileName, in);
+			InputStream in = HttpUtils.constructInputStream(image.url);
+			IOUtils.saveToAFile(outputDir, image.fileName, in);
 		}
 		System.out.println("Downloading completed.");
 	}
