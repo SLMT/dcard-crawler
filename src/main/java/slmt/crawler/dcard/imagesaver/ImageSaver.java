@@ -1,43 +1,42 @@
 package slmt.crawler.dcard.imagesaver;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import com.alibaba.fastjson.JSON;
+import slmt.crawler.dcard.api.DcardForumAPI;
+import slmt.crawler.dcard.api.DcardPostAPI;
+import slmt.crawler.dcard.json.Post;
+import slmt.crawler.dcard.json.PostInfo;
+import slmt.crawler.dcard.util.HttpsUtils;
+import slmt.crawler.dcard.util.IOUtils;
 
 public class ImageSaver {
 
 	public static void main(String[] args) throws IOException {
 		int numOfPosts = 100;
 		int hasFind = 0;
-		List<ImageInfo> images = new LinkedList<ImageInfo>();
+		List<ImageDownloadInfo> images = new LinkedList<ImageDownloadInfo>();
 
-		// Get all image urls
-		System.out.println("Retrieving list...");
+		// 取得圖片的網址
+		System.out.println("Retrieving image urls...");
 		for (int page = 1; hasFind < numOfPosts; page++) {
-			// Retrieve list
-			String data = retrieveData("http://www.dcard.tw/api/forum/sex/"
-					+ page + "/");
-			List<PostInfo> infos = JSON.parseArray(data, PostInfo.class);
+			// 取得此頁的文章列表
+			List<PostInfo> infos = DcardForumAPI.getPostList("sex", page);
 
-			// Retrieve posts
+			// 依序取得文章
 			for (PostInfo info : infos) {
 				if (!info.pinned && info.member.gender != null
 						&& info.member.gender.equals("F")) {
-					data = retrieveData("http://www.dcard.tw/api/post/all/"
-							+ info.id);
-					Post post = JSON.parseObject(data, Post.class);
+					Post post = DcardPostAPI.downloadPost(info.id);
 
 					List<String> urls = getImageURLs(post.version.get(0).content);
 					int num = 0;
 					for (String imageUrl : urls) {
-						images.add(new ImageInfo(
+						images.add(new ImageDownloadInfo(
 								convertToDownloadURL(imageUrl), info.id + "_"
 										+ num + ".jpg"));
 						num++;
@@ -46,37 +45,15 @@ public class ImageSaver {
 				hasFind++;
 			}
 		}
-		System.out.println("List retrieved.");
+		System.out.println("All urls are retrieved.");
 
-		// Download all images
+		// 下載檔案
 		System.out.println("Start downloading images...");
-		for (ImageInfo image : images)
-			URLDownload.fileUrl(image.url, image.fileName, "images");
+		for (ImageDownloadInfo image : images) {
+			InputStream in = HttpsUtils.constructInputStream(image.url);
+			IOUtils.saveToAFile(new File("images"), image.fileName, in);
+		}
 		System.out.println("Downloading completed.");
-	}
-
-	private static String retrieveData(String url) throws IOException {
-		// Set request
-		HttpURLConnection con = (HttpURLConnection) new URL(url)
-				.openConnection();
-		con.setRequestMethod("GET");
-
-		// Check response status
-		int responseCode = con.getResponseCode();
-		if (responseCode != 200)
-			return null;
-
-		// Get response body
-		BufferedReader in = new BufferedReader(new InputStreamReader(
-				con.getInputStream(), "UTF-8"));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		while ((inputLine = in.readLine()) != null)
-			response.append(inputLine);
-		in.close();
-
-		return response.toString();
 	}
 
 	private static List<String> getImageURLs(String article) {

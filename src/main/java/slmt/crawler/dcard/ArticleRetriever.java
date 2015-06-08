@@ -43,7 +43,7 @@ public class ArticleRetriever {
 					long start = System.nanoTime();
 					
 					// 讀取 json 字串
-					String json = IOUtils.loadFileAsString(new File(inDir, fileName));
+					String json = IOUtils.loadAsString(new File(inDir, fileName));
 					
 					// 將文章轉成 java 物件
 					Post post = JSON.parseObject(json, Post.class);

@@ -62,10 +62,20 @@ public class IOUtils {
 	 * @param file 檔案名稱
 	 * @return 檔案內容組成的字串
 	 */
-	public static String loadFileAsString(File file) throws IOException {
+	public static String loadAsString(File file) throws IOException {
+		return loadAsString(new FileInputStream(file));
+	}
+	
+	/**
+	 * 將指定 input stream 讀出，並組合成一個字串。
+	 * 
+	 * @param inStream 要讀取的 input stream
+	 * @return input stream 組成的字串
+	 */
+	public static String loadAsString(InputStream inStream) throws IOException {
 		// 開啟輸入串流
 		BufferedReader in = new BufferedReader(new InputStreamReader(
-				new FileInputStream(file), "UTF-8"));
+				inStream, "UTF-8"));
 		String inputLine;
 		StringBuffer response = new StringBuffer();
 
