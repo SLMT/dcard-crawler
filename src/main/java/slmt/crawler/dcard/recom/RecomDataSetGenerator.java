@@ -38,8 +38,8 @@ public class RecomDataSetGenerator {
 			// 逐檔處理
 			for (String fileName : inDir.list()) {
 				// 取出檔案名稱
-				String postIdStr = fileName.substring(0, 5);
-				String fileTypeStr = fileName.substring(6);
+				String postIdStr = fileName.substring(0, 6);
+				String fileTypeStr = fileName.substring(7);
 
 				if (fileTypeStr.equals("json")) {
 					// 讀取 json 字串

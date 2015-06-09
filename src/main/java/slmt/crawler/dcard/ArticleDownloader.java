@@ -51,7 +51,7 @@ public class ArticleDownloader {
 					System.out.println("Post no." + i + " is not found.");
 				else {
 					// 儲存檔案
-					IOUtils.saveToAFile(dirLocation, String.format("%05d", i)
+					IOUtils.saveToAFile(dirLocation, String.format("%06d", i)
 							+ ".json", in);
 					
 					// 輸出下載時間
