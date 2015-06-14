@@ -146,7 +146,8 @@ public class LongTermImageDaemon {
 							+ "' has been downloaded.");
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
+			System.out.println("Occur an error when checking post " + info.id);
 			e.printStackTrace();
 		}
 	}
