@@ -64,7 +64,9 @@ public class ArticleRetriever {
 					StringTokenizer st = new StringTokenizer(post.version.get(0).title);
 					while (st.hasMoreTokens())
 						sb.append(st.nextToken() + " ");
-					write(out, postIdStr, sb.toString());
+					// 重複十遍，讓 title 在處理時的權重提高
+					for (int i = 0; i < 10; i++)
+						write(out, postIdStr, sb.toString());
 					
 					// => 再存文章
 					st = new StringTokenizer(post.version.get(0).content, "\r\n");
