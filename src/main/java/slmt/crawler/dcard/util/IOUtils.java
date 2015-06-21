@@ -97,4 +97,10 @@ public class IOUtils {
 		// 轉成字串
 		return response.toString();
 	}
+
+	public static BufferedWriter getBufferedWriter(File dir, String fileName)
+			throws IOException {
+		return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+				new File(dir, fileName)), "UTF-8"));
+	}
 }
