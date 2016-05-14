@@ -78,7 +78,9 @@ java -jar dcard-crawler.jar -e -f PHOTOGRAPHY -i -p 1:3 photos
 
 程式會分成兩階段執行。首先下載文章，再去分析文章的內容來下載圖片。因此前面的訊息是在提示目前正在下載第幾頁的文章，後面則在說目前正下載哪篇文章的圖片。檔案名稱是他的 Dcard 文章編號。
 
-下載結束之後，`photos` 資料夾內應該有這些檔案：
+下載過程視使用者設定，以及當前 Dcard 的流量可能會花費數分鐘甚至更長的時間。
+
+下載結束之後，`photos` 資料夾內應該有這些檔案 (沒有全部列出)：
 
 ![IMAGE ALT TEXT HERE](example.png)
 
@@ -90,7 +92,7 @@ java -jar dcard-crawler.jar -e -f PHOTOGRAPHY -i -p 1:3 photos
 
 ## 程式碼相依性
 
-此程式編譯需要以下 library，公布的 jar 檔則已經包含了這些 library。
+此程式編譯需要以下 library，這些都已經寫入 Maven 的 `pom.xml` 之中，理論上可以直接用 Maven 編譯。
 
 - [Apache Commons CLI][2] - 1.3.1
   - 用來解析 command line options
@@ -99,6 +101,7 @@ java -jar dcard-crawler.jar -e -f PHOTOGRAPHY -i -p 1:3 photos
 - [Alibaba Fastjson][4] - 1.2.4
   - 用來解析 JSON
 
+公布的 Jar 檔則已經包含這些程式庫。
 
 ## TODOs
 
@@ -106,7 +109,7 @@ java -jar dcard-crawler.jar -e -f PHOTOGRAPHY -i -p 1:3 photos
   - CSV 下載器 (主要是為了能夠存進 database)
   - 簽名檔計數器
 - 下載下來的文章可以用 HTML 的格式存，這樣打開可以直接看到圖片
-- 將文章下載與圖片下載這兩個功能分開
+- 將文章下載與圖片下載這兩個功能分開 (這樣已經有文章就不用重新下載一遍)
 - 聲音檔下載器
 - GUI (應該不太可能做，不過還是寫一下)
 
