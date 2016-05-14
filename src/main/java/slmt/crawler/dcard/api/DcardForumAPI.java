@@ -16,15 +16,15 @@ public class DcardForumAPI {
 	private static String POST_LIST_BASE_URL = "https://www.dcard.tw/api/forum/";
 
 	/**
-	 * TODO Add contents
+	 * Gets the list of posts on a specified forum with given page number.
 	 * 
-	 * @param fourmAlias
-	 * @param pageNum
-	 * @return
+	 * @param forum the forum containing posts
+	 * @param pageNum the page number of the forum
+	 * @return the list of post information
 	 */
-	public static List<PostInfo> getPostList(String fourmAlias, int pageNum) {
+	public static List<PostInfo> getPostList(DcardForum forum, int pageNum) {
 		try {
-			String url = POST_LIST_BASE_URL + fourmAlias + "/" + pageNum;
+			String url = POST_LIST_BASE_URL + forum.getAlias() + "/" + pageNum;
 			InputStream in = HttpsUtils.constructInputStream(url);
 			
 			if (in == null)
