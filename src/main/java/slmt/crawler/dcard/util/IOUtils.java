@@ -90,8 +90,10 @@ public class IOUtils {
 		StringBuffer response = new StringBuffer();
 
 		// 讀檔
-		while ((inputLine = in.readLine()) != null)
+		while ((inputLine = in.readLine()) != null) {
 			response.append(inputLine);
+			response.append('\n');
+		}
 		in.close();
 
 		// 轉成字串

@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import slmt.crawler.dcard.analyzer.Parser;
+import slmt.crawler.dcard.analyzer.PostParser;
 import slmt.crawler.dcard.api.DcardForumAPI;
 import slmt.crawler.dcard.api.DcardPostAPI;
 import slmt.crawler.dcard.api.ImgurAPI;
@@ -53,7 +53,7 @@ public class ImageSaver {
 						&& info.member.gender.equals("F")) {
 					Post post = DcardPostAPI.downloadPost(info.id);
 
-					List<String> urls = Parser.getImageURLs(post.version.get(0).content);
+					List<String> urls = PostParser.getImageURLs(post.version.get(0).content);
 					int num = 0;
 					for (String imageUrl : urls) {
 						images.add(new ImageDownloadInfo(

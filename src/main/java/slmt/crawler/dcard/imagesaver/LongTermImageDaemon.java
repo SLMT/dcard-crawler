@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import slmt.crawler.dcard.analyzer.Parser;
+import slmt.crawler.dcard.analyzer.PostParser;
 import slmt.crawler.dcard.api.DcardForumAPI;
 import slmt.crawler.dcard.api.DcardPostAPI;
 import slmt.crawler.dcard.api.ImgurAPI;
@@ -116,7 +116,7 @@ public class LongTermImageDaemon {
 				Post post = DcardPostAPI.downloadPost(info.id);
 
 				// 取得文章中的圖片
-				List<String> urls = Parser
+				List<String> urls = PostParser
 						.getImageURLs(post.version.get(0).content);
 
 				// 送出訊息
