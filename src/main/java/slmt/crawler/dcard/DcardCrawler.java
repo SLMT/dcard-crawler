@@ -15,6 +15,8 @@ import slmt.crawler.dcard.downloader.ImageDownloader;
 
 public class DcardCrawler {
 	
+	private static final String VERSION = "0.1.0";
+	
 	private static final int DFT_START_PAGE = 1, DFT_END_PAGE = 5;
 	
 	private static Options options;
@@ -30,6 +32,13 @@ public class DcardCrawler {
 			printHelpThenExit(e.getLocalizedMessage());
 		}
 		
+		// Show the version number
+		if (cmd.hasOption("version")) {
+			System.out.println("Current version: " + VERSION);
+			System.exit(0);
+		}
+		
+		// Retrieve the download path
 		if (cmd.getArgList().size() < 1)
 			printHelpThenExit("please give a download path");
 		String downloadPath = cmd.getArgList().get(0);
@@ -100,6 +109,7 @@ public class DcardCrawler {
 				.hasArg().argName("M|F").desc("specify a gender (M=male, F=female)").build());
 		options.addOption(Option.builder("p").longOpt("page-num")
 				.hasArg().argName("start:end").desc("specify the page number").build());
+		options.addOption("v", "version", false, "show the version of this program");
 	}
 	
 	private static void printHelpThenExit(String errorMsg) {
