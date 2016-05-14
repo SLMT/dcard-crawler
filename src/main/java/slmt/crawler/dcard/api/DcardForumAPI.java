@@ -13,8 +13,6 @@ import slmt.crawler.dcard.util.IOUtils;
 
 public class DcardForumAPI {
 	
-	public static String FOURM_SEX = "sex";
-	
 	private static String POST_LIST_BASE_URL = "https://www.dcard.tw/api/forum/";
 
 	/**

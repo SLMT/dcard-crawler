@@ -21,7 +21,7 @@ public class PostParser {
 	public static List<String> getImageUrls(String article) {
 		List<String> list = new LinkedList<String>();
 		
-		// Try match imgur url
+		// Try to match imgur url
 		Matcher matcher = IMGUR_URL.matcher(article);
 		while (matcher.find())
 		{
@@ -29,7 +29,7 @@ public class PostParser {
 		    list.add(fileUrl);
 		}
 		
-		// Try match imgur file url
+		// Try to match imgur file url
 		matcher = IMGUR_FILE_URL.matcher(article);
 		while (matcher.find())
 		    list.add(matcher.group(0));
