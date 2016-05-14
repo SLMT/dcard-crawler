@@ -16,10 +16,13 @@ import slmt.crawler.dcard.util.IOUtils;
 public class DcardPostDownloader {
 	Logger logger = Logger.getLogger(DcardPostDownloader.class.getName());
 	
+	public static enum Gender { ALL, MALE, FEMALE };
+	
 	private File saveDir;
 	
 	// Options
 	private boolean onlyPostWithImage = false; // Not including comments
+	private Gender targetGender = Gender.ALL; // Kerker
 	private DcardForum forum = DcardForum.ALL;
 	
 	public DcardPostDownloader(String savePath) {
@@ -34,6 +37,10 @@ public class DcardPostDownloader {
 	
 	public void onlyWithImage(boolean enable) {
 		onlyPostWithImage = enable;
+	}
+	
+	public void setTargetGender(Gender gender) {
+		targetGender = gender;
 	}
 	
 	public void setTargetForum(DcardForum forum) {
@@ -52,6 +59,16 @@ public class DcardPostDownloader {
 				
 				// For each post in each page
 				for (PostInfo info : infos) {
+					// Only target gender
+					if (targetGender != Gender.ALL) {
+						if (targetGender == Gender.MALE &&
+								!info.member.gender.equals("M"))
+							continue;
+						else if (targetGender == Gender.FEMALE &&
+								info.member.gender.equals("M"))
+							continue;
+					}
+					
 					// Retrieve the post
 					Post post = DcardPostAPI.downloadPost(info.id);
 					
@@ -63,6 +80,9 @@ public class DcardPostDownloader {
 					String fileName = String.format("%09d.txt", info.id);
 					String basicPost = constructBasicPost(post);
 					IOUtils.saveToAFile(saveDir, fileName, basicPost);
+					
+					// Wait for a second
+					waitForASecond();
 				}
 				
 				if (logger.isLoggable(Level.INFO))
@@ -103,5 +123,13 @@ public class DcardPostDownloader {
 		out.append("文章內容：\n").append(article);
 		
 		return out.toString();
+	}
+	
+	private void waitForASecond() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }
