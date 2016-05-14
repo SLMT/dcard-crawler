@@ -6,6 +6,7 @@ import java.util.List;
 public class Post {
 	
 	// 文章基本資料
+	public long id;
 	public String forum_alias; // 文章類別
 	public boolean pinned; // 是否置頂
 	public int reply; // 回覆的原文編號，如果這篇不是回文，這個值就是 -1
