@@ -8,7 +8,7 @@ import slmt.crawler.dcard.json.Post;
 public class Test {
 
 	public static void main(String[] args) throws IOException {
-		Post post = DcardPostAPI.downloadPost(224046119);
+		Post post = DcardPostAPI.downloadPost(224047755);
 		System.out.println(post.content);
 	}
 

@@ -19,9 +19,10 @@ public class Post {
 	
 	// 發文者資料
 	public boolean anonymousSchool; // 是否隱藏學校
-	public boolean anonymousDepartment; // 是否隱藏系級
+	public boolean anonymousDepartment; // 是否隱藏系所
 	public String gender; // 性別
 	public String school; // 學校
+	public String department; // 系所
 	public boolean currentMember; // 登入的人是不是發文者
 	
 	// 所屬版面資訊

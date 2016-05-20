@@ -94,13 +94,13 @@ public class DcardPostDownloader {
 	}
 	
 	private boolean containImage(Post post) {
-		String article = post.version.get(0).content;
+		String article = post.content;
 		return article.contains("imgur.com");
 	}
 	
 	private String constructBasicPost(Post post) {
-		String title = post.version.get(0).title;
-		String article = post.version.get(0).content;
+		String title = post.title;
+		String article = post.content;
 		String oriUrl = "https://www.dcard.tw/f/" + forum.getAlias() + "/p/" + post.id;
 		
 		StringBuilder out = new StringBuilder();
@@ -109,10 +109,10 @@ public class DcardPostDownloader {
 		
 		out.append("文章發表時間：").append(post.createdAt).append('\n');
 		
-		out.append("發文者所屬：").append(post.member.school).append(' ');
+		out.append("發文者所屬：").append(post.school).append(' ');
 		if (!post.anonymousDepartment)
-			out.append(post.member.department).append(' ');
-		if (post.member.gender.equals("M"))
+			out.append(post).append(' ');
+		if (post.gender.equals("M"))
 			out.append("男");
 		else
 			out.append("女");
