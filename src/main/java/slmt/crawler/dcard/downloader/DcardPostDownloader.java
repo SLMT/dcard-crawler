@@ -62,10 +62,10 @@ public class DcardPostDownloader {
 					// Only target gender
 					if (targetGender != Gender.ALL) {
 						if (targetGender == Gender.MALE &&
-								!info.member.gender.equals("M"))
+								!info.gender.equals("M"))
 							continue;
 						else if (targetGender == Gender.FEMALE &&
-								info.member.gender.equals("M"))
+								info.gender.equals("M"))
 							continue;
 					}
 					

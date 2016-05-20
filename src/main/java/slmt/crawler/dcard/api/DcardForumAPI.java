@@ -13,18 +13,20 @@ import slmt.crawler.dcard.util.IOUtils;
 
 public class DcardForumAPI {
 	
-	private static String POST_LIST_BASE_URL = "https://www.dcard.tw/api/forum/";
+	private static String POST_LIST_BASE_URL = "https://dcard.tw/_api/forums/";
+	private static String URL_ARGUMENTS = "/posts?popular=false&before=";
 
 	/**
 	 * Gets the list of posts on a specified forum with given page number.
 	 * 
 	 * @param forum the forum containing posts
-	 * @param pageNum the page number of the forum
+	 * @param beforePostId the latest post id (excluded)
 	 * @return the list of post information
 	 */
-	public static List<PostInfo> getPostList(DcardForum forum, int pageNum) {
+	public static List<PostInfo> getPostList(DcardForum forum, int beforePostId) {
 		try {
-			String url = POST_LIST_BASE_URL + forum.getAlias() + "/" + pageNum;
+			String url = POST_LIST_BASE_URL + forum.getAlias() + URL_ARGUMENTS
+					+ beforePostId;
 			InputStream in = HttpsUtils.constructInputStream(url);
 			
 			if (in == null)

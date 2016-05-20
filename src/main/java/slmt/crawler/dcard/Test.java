@@ -1,15 +1,17 @@
 package slmt.crawler.dcard;
 
 import java.io.IOException;
+import java.util.List;
 
-import slmt.crawler.dcard.api.DcardPostAPI;
-import slmt.crawler.dcard.json.Post;
+import slmt.crawler.dcard.api.DcardForum;
+import slmt.crawler.dcard.api.DcardForumAPI;
+import slmt.crawler.dcard.json.PostInfo;
 
 public class Test {
 
 	public static void main(String[] args) throws IOException {
-		Post post = DcardPostAPI.downloadPost(224047755);
-		System.out.println(post.content);
+		List<PostInfo> posts = DcardForumAPI.getPostList(DcardForum.BOOK, 218874100);
+		System.out.println(posts.get(0).excerpt);
 	}
 
 }
