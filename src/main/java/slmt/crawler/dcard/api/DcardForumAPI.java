@@ -35,6 +35,9 @@ public class DcardForumAPI {
 	 * @return 前 30 篇文章列表
 	 */
 	public static List<PostInfo> getPostList(DcardForum forum) {
+		if (forum == DcardForum.ALL)
+			return getPostList();
+		
 		// https://dcard.tw/_api/forums/[forum]/posts?popular=false
 		String url = DCARD_API_BASE_URL + FORUM_PART_URL
 				+ forum.getAlias() + URL_ARGUMENTS_PART1;

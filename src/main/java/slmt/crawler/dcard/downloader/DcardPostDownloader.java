@@ -18,6 +18,8 @@ public class DcardPostDownloader {
 	
 	public static enum Gender { ALL, MALE, FEMALE };
 	
+	private static final int REPORT_COUNT = 5;
+	
 	private File saveDir;
 	
 	// Options
@@ -47,18 +49,29 @@ public class DcardPostDownloader {
 		this.forum = forum;
 	}
 	
-	public void downloadPosts(int startPageNum, int endPageNum) {
+	public void downloadPosts(int numOfPosts) {
 		
-		// For each page
 		try {
-			for (int page = startPageNum; page <= endPageNum; page++) {
-				List<PostInfo> infos = DcardForumAPI.getPostList(forum, page);
+			List<PostInfo> postList;
+			int postCount = 0, lastPostId = -1;
+			while (postCount < numOfPosts) {
+				// Retrieve a post list
+				if (lastPostId == -1) {
+					// Retrieve the first post list
+					if (logger.isLoggable(Level.INFO))
+						logger.info("retrieving first 30 posts of " + forum + " forum");
+					postList = DcardForumAPI.getPostList(forum);
+				} else {
+					// Retrieve posts before a given id
+					if (logger.isLoggable(Level.INFO))
+						logger.info("retrieving posts before no." + lastPostId + " in " + forum + " forum");
+					postList = DcardForumAPI.getPostList(forum, lastPostId);
+				}
 				
-				if (logger.isLoggable(Level.INFO))
-					logger.info("retrieving page no." + page);
-				
-				// For each post in each page
-				for (PostInfo info : infos) {
+				// For each post in the list
+				for (PostInfo info : postList) {
+					lastPostId = info.id;
+					
 					// Only target gender
 					if (targetGender != Gender.ALL) {
 						if (targetGender == Gender.MALE &&
@@ -83,10 +96,14 @@ public class DcardPostDownloader {
 					
 					// Wait for a second
 					waitForASecond();
+					
+					// Check if we need more
+					postCount++;
+					if (postCount % REPORT_COUNT == 0 && logger.isLoggable(Level.INFO))
+						logger.info(postCount + " posts have been retrieved.");
+					if (postCount >= numOfPosts)
+						break;
 				}
-				
-				if (logger.isLoggable(Level.INFO))
-					logger.info("page no." + page + " is downloaded");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
