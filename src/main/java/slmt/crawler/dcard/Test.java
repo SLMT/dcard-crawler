@@ -10,8 +10,14 @@ import slmt.crawler.dcard.json.PostInfo;
 public class Test {
 
 	public static void main(String[] args) throws IOException {
-		List<PostInfo> posts = DcardForumAPI.getPostList(DcardForum.BOOK, 218874100);
-		System.out.println(posts.get(0).excerpt);
+		List<PostInfo> posts = DcardForumAPI.getPostList();
+		System.out.println(posts.get(0).title);
+		
+		posts = DcardForumAPI.getPostList(DcardForum.BOOK);
+		System.out.println(posts.get(0).title);
+		
+		posts = DcardForumAPI.getPostList(DcardForum.BOOK, 224062050);
+		System.out.println(posts.get(0).title);
 	}
 
 }
