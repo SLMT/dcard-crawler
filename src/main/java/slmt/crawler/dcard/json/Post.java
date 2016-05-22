@@ -6,28 +6,31 @@ import java.util.List;
 public class Post {
 	
 	// 文章基本資料
-	public long id;
-	public String forum_alias; // 文章類別
-	public boolean pinned; // 是否置頂
-	public int reply; // 回覆的原文編號，如果這篇不是回文，這個值就是 -1
+	public long id; // 編號
+	public String title; // 標題
+	public String content; // 內文
+	public String excerpt; // 摘要
 	public String createdAt; // 發文時間
 	public String updatedAt; // 最後更新時間（有人留言也算更新）
+	public String deletedAt; // 刪除時間 (真的會看到這個變數的內容嗎?)
+	public int commentCount; // 回覆人數
 	public int likeCount; // 喜歡的人數
-	// public int like; // 同上，看不出差別何在
+	public List<String> tags = new LinkedList<String>();
 	
 	// 發文者資料
-	public User member; // 發文者資訊
-	public boolean anonymousDepartment; // 是否隱藏系級
 	public boolean anonymousSchool; // 是否隱藏學校
+	public boolean anonymousDepartment; // 是否隱藏系所
+	public String gender; // 性別
+	public String school; // 學校
+	public String department; // 系所
+	public boolean currentMember; // 登入的人是不是發文者
 	
-	// 與現在登入的使用者相關的資訊
-	public boolean currentUser; // 是不是發文者
-	public boolean isLiked; // 有沒有點喜歡
-	public boolean follow; // 是否有追蹤
+	// 所屬版面資訊
+	public boolean pinned; // 是否置頂
+	public String forumId; // 版面編號? (不確定)
+	public String forumName; // 版面名稱
+	public String forumAlias; // 版面縮寫
 	
-	// 文章內容
-	public List<Version> version = new LinkedList<Version>();
-	
-	// 留言
-	public List<Comment> comment = new LinkedList<Comment>();
+	// 不確定用途
+	public String replyId; // 也許是回覆的原文編號 (預設值是 null)
 }

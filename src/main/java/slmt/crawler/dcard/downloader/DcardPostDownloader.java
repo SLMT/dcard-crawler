@@ -18,10 +18,14 @@ public class DcardPostDownloader {
 	
 	public static enum Gender { ALL, MALE, FEMALE };
 	
+	private static final int REPORT_COUNT = 5;
+	
 	private File saveDir;
 	
 	// Options
-	private boolean onlyPostWithImage = false; // Not including comments
+	private boolean onlyPostWithImage = false; // Not including the images in comments
+	private boolean redownloadExistings = false;
+	private boolean dontCountRedownPosts = false;
 	private Gender targetGender = Gender.ALL; // Kerker
 	private DcardForum forum = DcardForum.ALL;
 	
@@ -36,38 +40,79 @@ public class DcardPostDownloader {
 	}
 	
 	public void onlyWithImage(boolean enable) {
+		if (logger.isLoggable(Level.INFO))
+			logger.info("only download the posts with images: " + enable);
 		onlyPostWithImage = enable;
 	}
 	
+	public void redownloadExistings(boolean enable) {
+		if (logger.isLoggable(Level.INFO))
+			logger.info("re-download existing posts: " + enable);
+		redownloadExistings = enable;
+	}
+	
+	public void dontCountRedownPosts(boolean enable) {
+		if (logger.isLoggable(Level.INFO))
+			logger.info("do not count re-downloaded posts: " + enable);
+		dontCountRedownPosts = enable;
+	}
+	
 	public void setTargetGender(Gender gender) {
+		if (logger.isLoggable(Level.INFO))
+			logger.info("only download the posts whose author is: " + gender.name());
 		targetGender = gender;
 	}
 	
 	public void setTargetForum(DcardForum forum) {
+		if (logger.isLoggable(Level.INFO))
+			logger.info("only download the posts in forum: " + forum.name());
 		this.forum = forum;
 	}
 	
-	public void downloadPosts(int startPageNum, int endPageNum) {
-		
-		// For each page
+	public void downloadPosts(int numOfPosts) {
+		downloadPosts(numOfPosts, -1);
+	}
+	
+	public void downloadPosts(int numOfPosts, int lastPostId) {
 		try {
-			for (int page = startPageNum; page <= endPageNum; page++) {
-				List<PostInfo> infos = DcardForumAPI.getPostList(forum, page);
+			List<PostInfo> postList;
+			int totalLoadCount = 0, newLoadCount = 0;
+			while ((dontCountRedownPosts && newLoadCount < numOfPosts) ||
+					(!dontCountRedownPosts && totalLoadCount < numOfPosts)) {
+				// Retrieve a post list
+				if (lastPostId < 0) {
+					// Retrieve the first post list
+					if (logger.isLoggable(Level.INFO))
+						logger.info("retrieving the list of first 30 posts of " + forum + " forum");
+					postList = DcardForumAPI.getPostList(forum);
+				} else {
+					// Retrieve posts before a given id
+					if (logger.isLoggable(Level.INFO))
+						logger.info("retrieving the list of posts before no." + lastPostId + " in " + forum + " forum");
+					postList = DcardForumAPI.getPostList(forum, lastPostId);
+				}
 				
-				if (logger.isLoggable(Level.INFO))
-					logger.info("retrieving page no." + page);
-				
-				// For each post in each page
-				for (PostInfo info : infos) {
+				// For each post in the list
+				for (PostInfo info : postList) {
+					lastPostId = info.id;
+					
 					// Only target gender
 					if (targetGender != Gender.ALL) {
 						if (targetGender == Gender.MALE &&
-								!info.member.gender.equals("M"))
+								!info.gender.equals("M"))
 							continue;
 						else if (targetGender == Gender.FEMALE &&
-								info.member.gender.equals("M"))
+								info.gender.equals("M"))
 							continue;
 					}
+					
+					// Check if we have already had this post
+					String fileName = String.format("%09d.txt", info.id);
+					boolean existing = false;
+					if (new File(saveDir, fileName).exists())
+						existing = true;
+					if (!redownloadExistings && existing)
+						continue;
 					
 					// Retrieve the post
 					Post post = DcardPostAPI.downloadPost(info.id);
@@ -77,16 +122,23 @@ public class DcardPostDownloader {
 						continue;
 					
 					// Save the post
-					String fileName = String.format("%09d.txt", info.id);
 					String basicPost = constructBasicPost(post);
 					IOUtils.saveToAFile(saveDir, fileName, basicPost);
 					
 					// Wait for a second
 					waitForASecond();
+					
+					// Check if we need more
+					if (!existing)
+						newLoadCount++;
+					totalLoadCount++;
+					if (totalLoadCount % REPORT_COUNT == 0 && logger.isLoggable(Level.INFO))
+						logger.info(totalLoadCount + " posts have been downloaded. ("
+								+ (totalLoadCount - newLoadCount) + " posts are re-downloaded.)");
+					if ((dontCountRedownPosts && newLoadCount >= numOfPosts) ||
+							(!dontCountRedownPosts && totalLoadCount >= numOfPosts))
+						break;
 				}
-				
-				if (logger.isLoggable(Level.INFO))
-					logger.info("page no." + page + " is downloaded");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -94,13 +146,13 @@ public class DcardPostDownloader {
 	}
 	
 	private boolean containImage(Post post) {
-		String article = post.version.get(0).content;
+		String article = post.content;
 		return article.contains("imgur.com");
 	}
 	
 	private String constructBasicPost(Post post) {
-		String title = post.version.get(0).title;
-		String article = post.version.get(0).content;
+		String title = post.title;
+		String article = post.content;
 		String oriUrl = "https://www.dcard.tw/f/" + forum.getAlias() + "/p/" + post.id;
 		
 		StringBuilder out = new StringBuilder();
@@ -109,10 +161,10 @@ public class DcardPostDownloader {
 		
 		out.append("文章發表時間：").append(post.createdAt).append('\n');
 		
-		out.append("發文者所屬：").append(post.member.school).append(' ');
+		out.append("發文者所屬：").append(post.school).append(' ');
 		if (!post.anonymousDepartment)
-			out.append(post.member.department).append(' ');
-		if (post.member.gender.equals("M"))
+			out.append(post).append(' ');
+		if (post.gender.equals("M"))
 			out.append("男");
 		else
 			out.append("女");

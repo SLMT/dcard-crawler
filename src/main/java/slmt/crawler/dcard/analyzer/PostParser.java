@@ -15,7 +15,7 @@ public class PostParser {
 	private static Pattern IMGUR_FILE_URL = Pattern.compile("https?:\\/\\/i\\.imgur\\.com\\/[a-zA-Z0-9]+\\.jpg");
 	
 	public static List<String> getImageUrls(Post post) {
-		return getImageUrls(post.version.get(0).content);
+		return getImageUrls(post.content);
 	}
 	
 	public static List<String> getImageUrls(String article) {

@@ -11,7 +11,7 @@ import slmt.crawler.dcard.util.IOUtils;
 
 public class DcardPostAPI {
 
-	private static final String POST_API_PREFIX = "https://www.dcard.tw/api/post/all/";
+	private static final String POST_API_PREFIX = "https://dcard.tw/_api/posts/";
 
 	/**
 	 * 建立一個下載指定 Dcard post 的 input stream.
