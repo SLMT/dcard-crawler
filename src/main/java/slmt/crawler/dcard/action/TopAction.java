@@ -26,14 +26,22 @@ public class TopAction extends Action {
 			System.exit(0);
 		}
 		
+		if (cmdLine.getArgs().length < 1)
+			printHelpThenExit("unrecognized command");
+		
 		// 根據指令產生對應 command 物件
 		String input = cmdLine.getArgs()[0];
-		Action cmd = null;
-		if (input.equals(FetchPostAction.COMMAND_NAME))
-			cmd = new FetchPostAction();
+		Action action = null;
+		if (input.equals(FetchPostAction.ACTION_NAME))
+			action = new FetchPostAction();
+		else if (input.equals(FetchImageAction.ACTION_NAME))
+			action = new FetchImageAction();
 		
-		if (cmd == null)
+		if (action == null)
 			printHelpThenExit("unrecognized command");
+		
+		// 執行指令
+		action.execute(args);
 	}
 
 	@Override
@@ -46,12 +54,13 @@ public class TopAction extends Action {
 		System.err.println("error: " + errorMsg);
 		
 		StringBuilder sb = new StringBuilder();
+		sb.append('\n');
 		sb.append("usage: " + COMMAND_PREFIX + "[action] [options] [arguments]\n");
 		sb.append("here are the available actions:\n");
 		sb.append("fetch-post: fetch posts from Dcard\n");
 		sb.append("fetch-images: fetch images in the downloaded posts\n");
 		
-		sb.append("\n");
+		sb.append('\n');
 		sb.append("or, use '-v' to show the version number");
 		
 		System.out.println(sb.toString());

@@ -2,16 +2,14 @@ package slmt.crawler.dcard;
 
 import java.io.IOException;
 
-import slmt.crawler.dcard.api.DcardForum;
-import slmt.crawler.dcard.downloader.DcardPostDownloader;
+import slmt.crawler.dcard.action.Action;
+import slmt.crawler.dcard.action.TopAction;
 
 public class Test {
 
 	public static void main(String[] args) throws IOException {
-		DcardPostDownloader downloader = new DcardPostDownloader("/tmp/posts");
-		downloader.setTargetForum(DcardForum.BOOK);
-		downloader.onlyWithImage(true);
-		downloader.downloadPosts(20);
+		Action action = new TopAction();
+		action.execute(new String[]{"-v"});
 	}
 
 }
