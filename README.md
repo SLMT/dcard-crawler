@@ -102,7 +102,7 @@ java -jar dcard-crawler.jar fetch-post -e -f PHOTOGRAPHY 10 photos
 
 執行完畢後就可以在 `photos` 資料夾找到下載下來的文章。
 
-若想要進一步下載圖片，可以再接著使用以下指令：
+若想要進一步下載文章中包含的圖片，並存放於同一個資料夾，可以再接著使用以下指令：
 
 ```
 java -jar dcard-crawler.jar fetch-image photos photos
