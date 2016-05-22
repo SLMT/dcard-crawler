@@ -55,12 +55,10 @@ public class TopAction extends Action {
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append('\n');
-		sb.append("usage: " + getCommandSyntax() + "\n");
+		sb.append("usage: " + getCommandSyntax() + "\n\n");
 		sb.append("here are the available actions:\n");
-		sb.append(FetchPostAction.ACTION_NAME + ": fetch posts from Dcard\n");
-		sb.append(FetchImageAction.ACTION_NAME + ": fetch images in the downloaded posts\n");
-		
-		sb.append('\n');
+		sb.append("  " + FetchPostAction.ACTION_NAME + ": fetch posts from Dcard\n");
+		sb.append("  " + FetchImageAction.ACTION_NAME + ": fetch images in the downloaded posts\n");
 		sb.append("or, use '-v' to show the version number");
 		
 		System.out.println(sb.toString());
