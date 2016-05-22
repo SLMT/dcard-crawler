@@ -1,5 +1,7 @@
 package slmt.crawler.dcard.action;
 
+import org.apache.commons.cli.CommandLine;
+
 import slmt.crawler.dcard.downloader.ImageDownloader;
 
 public class FetchImageAction extends Action {
@@ -8,16 +10,22 @@ public class FetchImageAction extends Action {
 
 	@Override
 	public void execute(String[] args) {
+		CommandLine cmdLine = parse(args);
+		
+		// Retrieve the download path
+		if (cmdLine.getArgs().length < 3)
+			printHelpThenExit("please give more arguments");
+		String postDirPath = cmdLine.getArgs()[1];
+		String savePath = cmdLine.getArgs()[2];
+		
 		// Download images
-				if (cmd.hasOption("download-images")) {
-					ImageDownloader imgDownloader = new ImageDownloader(downloadPath, downloadPath);
-					imgDownloader.downloadImages();
-				}
+		ImageDownloader imgDownloader = new ImageDownloader(postDirPath, savePath);
+		imgDownloader.downloadImages();
 	}
 
 	@Override
 	public String getCommandSyntax() {
-		return ACTION_NAME;
+		return COMMAND_PREFIX + " " + ACTION_NAME + " [options] [posts dir path] [save path]";
 	}
 
 }
