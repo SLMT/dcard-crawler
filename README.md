@@ -4,9 +4,8 @@
 
 ## 功能
 
-- 可以用來下載 Dcard 指定版面、指定頁面的文章
-- 可以指定文章的作者性別
-- 可以下載文章中所包含的圖片 (不含留言中的)
+- 可以用來下載 Dcard 指定版面的文章，並可以給予多項條件
+- 可以下載文章中所包含的圖片 (不含留言中的圖片)
 
 ## 環境需求
 
@@ -15,22 +14,37 @@
 
 ## 使用方式
 
-此程式的執行方法如下，在沒有任何選項的情況下，會下載所有文章之中前五頁的文章：
+此程式的執行方法如下：
 
 ```
-java -jar dcard-crawler.jar [選項] [下載路徑]
+java -jar dcard-crawler.jar [動作] [選項] [參數]
 ```
 
-下載路徑即為檔案儲存的資料夾位置，可以是相對也可以是絕對路徑。
+此程式必須先指定要進行的**動作**，這個時候針對不同的動作就會有更進一步的指示。可以使用的動作有：
+- `fetch-post` - 下載文章
+- `fetch-image` - 下載已經存在電腦中的文章包含的圖片
 
-目前可以使用的選項有這些：
+以下針對這些動作一一介紹。
+
+### `fetch-post`
+
+對於 `fetch-post` 這個動作的具體執行方法如下：
 
 ```
+java -jar dcard-crawler.jar fetch-post [選項] [下載文章數目] [存檔路徑]
+```
+
+其中`下載文章數目`控制要下載多少文章，`存檔路徑`則是指定文章存放的位置，可以是絕對也可以是相對路徑。若存檔資料夾中已經有之前下載過的文章，那麼程式會自動跳過存在的文章。使用者可以透過選項自行指定是否要重新下載存在的文章。特別注意若使用者指定重新下載，那麼預設會把重新下載的文章也列入`下載文章數目`的計算。該設定可以透過`-d`選項忽略。
+
+可以使用的選項有：
+
+```
+-b,--before-id <post id>    從指定文章編號之前開始下載
+-r,--redownload-exsiting    重新下載已經下載過的文章
+-d,--dont-count-redowns     下載計算不包含重新下載的文章
 -e,--ex-no-img-posts        不要下載不含圖片的文章
 -f,--forum <forum alias>    指定討論版 (必須使用別名)
 -g,--gender <M|F>           指定作者性別 (M=男生, F=女生)
--i,--download-images        下載文章中的圖片
--p,--page-num <start:end>   指定頁碼 (起始:結束)
 -v,--version                顯示程式版本號碼
 ```
 
@@ -41,6 +55,22 @@ ALL, BOOK, ACG, GAME, CCC, FUNNY, BG, TREADING, TALK, GIRL, BOY,
 MOOD, MUSIC, TRAVEL, PHOTOGRAPHY, MOVIE, HOROSCOPES, LITERATURE, SPORT,
 PET, FOOD, HANDICRAFTS, JOB, STUDYABROAD, MARVEL, FRESHMAN, COURSE,
 EXAM, SEX, DCARD, WHYSOSERIOUS;
+```
+
+### `fetch-image`
+
+對於 `fetch-post` 這個動作的具體執行方法如下：
+
+```
+java -jar dcard-crawler.jar fetch-image [選項] [文章路徑] [圖片存檔路徑]
+```
+
+此指令會從已經下載下來的文章中，找出圖片網址，並將圖片下載下來。使用者必須在`文章路徑`指定文章的資料夾，並指定在`圖片存檔路徑`指定圖片存放位置。
+
+可以使用的選項有：
+
+```
+-v,--version                顯示程式版本號碼
 ```
 
 ## 執行範例
@@ -109,7 +139,7 @@ java -jar dcard-crawler.jar -e -f PHOTOGRAPHY -i -p 1:3 photos
   - CSV 下載器 (主要是為了能夠存進 database)
   - 簽名檔計數器
 - 下載下來的文章可以用 HTML 的格式存，這樣打開可以直接看到圖片
-- 將文章下載與圖片下載這兩個功能分開 (這樣已經有文章就不用重新下載一遍)
+- 增加一個 action 來同時進行抓取文章與圖片
 - 聲音檔下載器
 - GUI (應該不太可能做，不過還是寫一下)
 
