@@ -4,9 +4,8 @@
 
 ## 功能
 
-- 可以用來下載 Dcard 指定版面、指定頁面的文章
-- 可以指定文章的作者性別
-- 可以下載文章中所包含的圖片 (不含留言中的)
+- 可以用來下載 Dcard 指定版面的文章，並可以給予多項條件
+- 可以下載文章中所包含的圖片 (不含留言中的圖片)
 
 ## 環境需求
 
@@ -15,22 +14,39 @@
 
 ## 使用方式
 
-此程式的執行方法如下，在沒有任何選項的情況下，會下載所有文章之中前五頁的文章：
+此程式的執行方法如下：
 
 ```
-java -jar dcard-crawler.jar [選項] [下載路徑]
+java -jar dcard-crawler.jar [動作] [選項] [參數]
 ```
 
-下載路徑即為檔案儲存的資料夾位置，可以是相對也可以是絕對路徑。
+此程式必須先指定要進行的**動作**，這個時候針對不同的動作就會有更進一步的指示。可以使用的動作有：
+- `fetch-post` - 下載文章
+- `fetch-image` - 下載已經存在電腦中的文章包含的圖片
 
-目前可以使用的選項有這些：
+或者也可以使用 `-v` 來印出版本編號。
+
+以下針對這些動作一一介紹。
+
+### 下載文章
+
+對於 `fetch-post` 這個動作的具體執行方法如下：
 
 ```
+java -jar dcard-crawler.jar fetch-post [選項] [下載文章數目] [存檔路徑]
+```
+
+其中`下載文章數目`控制要下載多少文章，`存檔路徑`則是指定文章存放的位置，可以是絕對也可以是相對路徑。若存檔資料夾中已經有之前下載過的文章，那麼程式會自動跳過存在的文章。使用者可以透過選項自行指定是否要重新下載存在的文章。特別注意若使用者指定重新下載，那麼預設會把重新下載的文章也列入`下載文章數目`的計算。該設定可以透過`-d`選項忽略。
+
+可以使用的選項有：
+
+```
+-b,--before-id <post id>    從指定文章編號之前開始下載
+-r,--redownload-exsiting    重新下載已經下載過的文章
+-d,--dont-count-redowns     下載計算不包含重新下載的文章
 -e,--ex-no-img-posts        不要下載不含圖片的文章
 -f,--forum <forum alias>    指定討論版 (必須使用別名)
 -g,--gender <M|F>           指定作者性別 (M=男生, F=女生)
--i,--download-images        下載文章中的圖片
--p,--page-num <start:end>   指定頁碼 (起始:結束)
 -v,--version                顯示程式版本號碼
 ```
 
@@ -43,42 +59,77 @@ PET, FOOD, HANDICRAFTS, JOB, STUDYABROAD, MARVEL, FRESHMAN, COURSE,
 EXAM, SEX, DCARD, WHYSOSERIOUS;
 ```
 
-## 執行範例
+### 下載文章中的圖片
 
-假設我今天想下載攝影版 (`-f PHOTOGRAPHY`) 前三頁文章 (`-p 1:3`) 的圖片 (`-i`) 到我的資料夾 `photos`，而且不想要把沒有圖片的文章抓下來 (`-e`)，可以這樣執行：
+對於 `fetch-post` 這個動作的具體執行方法如下：
 
 ```
-java -jar dcard-crawler.jar -e -f PHOTOGRAPHY -i -p 1:3 photos
+java -jar dcard-crawler.jar fetch-image [選項] [文章資料夾路徑] [圖片存檔路徑]
+```
+
+此指令會從已經下載下來的文章中，找出圖片網址，並將圖片下載下來。使用者必須在`文章資料夾路徑`指定文章的資料夾，並透過`圖片存檔路徑`指定圖片存放位置。
+
+可以使用的選項有：
+
+```
+-v,--version                顯示程式版本號碼
+```
+
+## 執行範例
+
+假設我今天想下載攝影版 (`-f PHOTOGRAPHY`) 前 10 篇包含圖片 (`-e`) 的文章到我的資料夾 `photos`，可以這樣執行：
+
+```
+java -jar dcard-crawler.jar fetch-post -e -f PHOTOGRAPHY 10 photos
 ```
 
 執行期間大概會看到這些資訊：
 
 ```
-五月 14, 2016 6:41:25 下午 slmt.crawler.dcard.downloader.DcardPostDownloader <init>
+五月 22, 2016 6:52:49 下午 slmt.crawler.dcard.downloader.DcardPostDownloader <init>
 資訊: creates a new directory at photos
-五月 14, 2016 6:41:26 下午 slmt.crawler.dcard.downloader.DcardPostDownloader downloadPosts
-資訊: retrieving page no.1
-五月 14, 2016 6:41:48 下午 slmt.crawler.dcard.downloader.DcardPostDownloader downloadPosts
-資訊: page no.1 is downloaded
-五月 14, 2016 6:41:48 下午 slmt.crawler.dcard.downloader.DcardPostDownloader downloadPosts
-資訊: retrieving page no.2
-五月 14, 2016 6:42:09 下午 slmt.crawler.dcard.downloader.DcardPostDownloader downloadPosts
-資訊: page no.2 is downloaded
-五月 14, 2016 6:42:09 下午 slmt.crawler.dcard.downloader.DcardPostDownloader downloadPosts
-資訊: retrieving page no.3
-五月 14, 2016 6:42:31 下午 slmt.crawler.dcard.downloader.DcardPostDownloader downloadPosts
-資訊: page no.3 is downloaded
-五月 14, 2016 6:42:31 下午 slmt.crawler.dcard.downloader.ImageDownloader downloadImages
-資訊: downloading images in 210419345.txt
-五月 14, 2016 6:42:34 下午 slmt.crawler.dcard.downloader.ImageDownloader downloadImages
-資訊: finishes downloading for 210419345.txt
+五月 22, 2016 6:52:49 下午 slmt.crawler.dcard.downloader.DcardPostDownloader setTargetForum
+資訊: only download the posts in forum: PHOTOGRAPHY
+五月 22, 2016 6:52:49 下午 slmt.crawler.dcard.downloader.DcardPostDownloader onlyWithImage
+資訊: only download the posts with images: true
+五月 22, 2016 6:52:49 下午 slmt.crawler.dcard.downloader.DcardPostDownloader downloadPosts
+資訊: retrieving the list of first 30 posts of PHOTOGRAPHY forum
+五月 22, 2016 6:52:56 下午 slmt.crawler.dcard.downloader.DcardPostDownloader downloadPosts
+資訊: 5 posts have been downloaded. (0 posts are re-downloaded.)
+五月 22, 2016 6:53:01 下午 slmt.crawler.dcard.downloader.DcardPostDownloader downloadPosts
+資訊: 10 posts have been downloaded. (0 posts are re-downloaded.)
+```
+
+執行完畢後就可以在 `photos` 資料夾找到下載下來的文章。
+
+若想要進一步下載文章中包含的圖片，並存放於同一個資料夾，可以再接著使用以下指令：
+
+```
+java -jar dcard-crawler.jar fetch-image photos photos
+```
+
+執行過程大概會看到以下資訊：
+
+```
+五月 22, 2016 6:54:11 下午 slmt.crawler.dcard.downloader.ImageDownloader downloadImages
+資訊: downloading images in 224065441.txt
+五月 22, 2016 6:54:30 下午 slmt.crawler.dcard.downloader.ImageDownloader downloadImages
+資訊: finishes downloading for 224065441.txt
+五月 22, 2016 6:54:30 下午 slmt.crawler.dcard.downloader.ImageDownloader downloadImages
+資訊: downloading images in 224065465.txt
+五月 22, 2016 6:54:31 下午 slmt.crawler.dcard.downloader.ImageDownloader downloadImages
+資訊: finishes downloading for 224065465.txt
+五月 22, 2016 6:54:31 下午 slmt.crawler.dcard.downloader.ImageDownloader downloadImages
+資訊: downloading images in 224065528.txt
+五月 22, 2016 6:54:31 下午 slmt.crawler.dcard.downloader.ImageDownloader downloadImages
+資訊: finishes downloading for 224065528.txt
+五月 22, 2016 6:54:31 下午 slmt.crawler.dcard.downloader.ImageDownloader downloadImages
+資訊: downloading images in 224065643.txt
+五月 22, 2016 6:54:32 下午 slmt.crawler.dcard.downloader.ImageDownloader downloadImages
+資訊: finishes downloading for 224065643.txt
 
 (省略)
 ```
-
-程式會分成兩階段執行。首先下載文章，再去分析文章的內容來下載圖片。因此前面的訊息是在提示目前正在下載第幾頁的文章，後面則在說目前正下載哪篇文章的圖片。檔案名稱是他的 Dcard 文章編號。
-
-下載過程視使用者設定，以及當前 Dcard 的流量可能會花費數分鐘甚至更長的時間。
 
 下載結束之後，`photos` 資料夾內應該有這些檔案 (沒有全部列出)：
 
@@ -109,7 +160,7 @@ java -jar dcard-crawler.jar -e -f PHOTOGRAPHY -i -p 1:3 photos
   - CSV 下載器 (主要是為了能夠存進 database)
   - 簽名檔計數器
 - 下載下來的文章可以用 HTML 的格式存，這樣打開可以直接看到圖片
-- 將文章下載與圖片下載這兩個功能分開 (這樣已經有文章就不用重新下載一遍)
+- 增加一個 action 來同時進行抓取文章與圖片
 - 聲音檔下載器
 - GUI (應該不太可能做，不過還是寫一下)
 
