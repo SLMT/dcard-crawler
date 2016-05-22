@@ -16,7 +16,7 @@ public class FetchImageAction extends Action {
 	}
 
 	@Override
-	public String getActionName() {
+	public String getCommandSyntax() {
 		return ACTION_NAME;
 	}
 

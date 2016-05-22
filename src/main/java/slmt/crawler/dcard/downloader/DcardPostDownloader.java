@@ -23,7 +23,9 @@ public class DcardPostDownloader {
 	private File saveDir;
 	
 	// Options
-	private boolean onlyPostWithImage = false; // Not including comments
+	private boolean onlyPostWithImage = false; // Not including the images in comments
+	private boolean redownloadExistings = false;
+	private boolean countRedownPosts = false;
 	private Gender targetGender = Gender.ALL; // Kerker
 	private DcardForum forum = DcardForum.ALL;
 	
@@ -41,6 +43,14 @@ public class DcardPostDownloader {
 		onlyPostWithImage = enable;
 	}
 	
+	public void redownloadExistings(boolean enable) {
+		redownloadExistings = enable;
+	}
+	
+	public void countRedownPosts(boolean enable) {
+		countRedownPosts = enable;
+	}
+	
 	public void setTargetGender(Gender gender) {
 		targetGender = gender;
 	}
@@ -50,13 +60,16 @@ public class DcardPostDownloader {
 	}
 	
 	public void downloadPosts(int numOfPosts) {
-		
+		downloadPosts(numOfPosts, -1);
+	}
+	
+	public void downloadPosts(int numOfPosts, int lastPostId) {
 		try {
 			List<PostInfo> postList;
-			int postCount = 0, lastPostId = -1;
+			int postCount = 0;
 			while (postCount < numOfPosts) {
 				// Retrieve a post list
-				if (lastPostId == -1) {
+				if (lastPostId < 0) {
 					// Retrieve the first post list
 					if (logger.isLoggable(Level.INFO))
 						logger.info("retrieving first 30 posts of " + forum + " forum");
@@ -82,6 +95,14 @@ public class DcardPostDownloader {
 							continue;
 					}
 					
+					// Check if we have already had this post
+					String fileName = String.format("%09d.txt", info.id);
+					boolean existing = false;
+					if (new File(saveDir, fileName).exists())
+						existing = true;
+					if (!redownloadExistings && existing)
+						continue;
+					
 					// Retrieve the post
 					Post post = DcardPostAPI.downloadPost(info.id);
 					
@@ -90,7 +111,6 @@ public class DcardPostDownloader {
 						continue;
 					
 					// Save the post
-					String fileName = String.format("%09d.txt", info.id);
 					String basicPost = constructBasicPost(post);
 					IOUtils.saveToAFile(saveDir, fileName, basicPost);
 					
@@ -98,7 +118,8 @@ public class DcardPostDownloader {
 					waitForASecond();
 					
 					// Check if we need more
-					postCount++;
+					if (countRedownPosts || !existing)
+						postCount++;
 					if (postCount % REPORT_COUNT == 0 && logger.isLoggable(Level.INFO))
 						logger.info(postCount + " posts have been retrieved.");
 					if (postCount >= numOfPosts)

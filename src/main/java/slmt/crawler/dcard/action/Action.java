@@ -9,7 +9,7 @@ import org.apache.commons.cli.ParseException;
 
 public abstract class Action {
 	
-	public static final String COMMAND_PREFIX = "java -jar dcard-crawler.jar ";
+	public static final String COMMAND_PREFIX = "java -jar dcard-crawler.jar";
 	
 	protected Options options;
 	
@@ -35,14 +35,13 @@ public abstract class Action {
 	}
 	
 	public abstract void execute(String[] args);
-	
-	public abstract String getActionName();
+
+	public abstract String getCommandSyntax();
 	
 	protected void printHelpThenExit(String errorMsg) {
 		System.err.println("error: " + errorMsg);
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp(COMMAND_PREFIX +
-				getActionName() + " [options]", options);
+		formatter.printHelp(getCommandSyntax(), options);
 		System.exit(1);
 	}
 }

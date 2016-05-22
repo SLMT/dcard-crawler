@@ -45,8 +45,8 @@ public class TopAction extends Action {
 	}
 
 	@Override
-	public String getActionName() {
-		return "";
+	public String getCommandSyntax() {
+		return COMMAND_PREFIX + " [action] [options] [arguments]";
 	}
 	
 	@Override
@@ -55,7 +55,7 @@ public class TopAction extends Action {
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append('\n');
-		sb.append("usage: " + COMMAND_PREFIX + "[action] [options] [arguments]\n");
+		sb.append("usage: " + getCommandSyntax() + "\n");
 		sb.append("here are the available actions:\n");
 		sb.append("fetch-post: fetch posts from Dcard\n");
 		sb.append("fetch-images: fetch images in the downloaded posts\n");
