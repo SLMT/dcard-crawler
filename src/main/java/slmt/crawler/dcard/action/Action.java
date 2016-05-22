@@ -1,4 +1,4 @@
-package slmt.crawler.dcard.command;
+package slmt.crawler.dcard.action;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -7,13 +7,13 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-public abstract class Command {
+public abstract class Action {
 	
 	public static final String COMMAND_PREFIX = "java -jar dcard-crawler.jar ";
 	
 	protected Options options;
 	
-	public Command() {
+	public Action() {
 		options = new Options();
 		
 		// Add common options

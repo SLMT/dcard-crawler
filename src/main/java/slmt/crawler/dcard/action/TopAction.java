@@ -1,32 +1,39 @@
-package slmt.crawler.dcard.command;
+package slmt.crawler.dcard.action;
 
 import org.apache.commons.cli.CommandLine;
 
 import slmt.crawler.dcard.DcardCrawler;
 
 /**
- * 一個特殊的 Command，用來產生其他 Command 而生。
+ * 一個特殊的 Action，用來產生其他 Action 而生。
  * 
  * @author SLMT
  *
  */
-public class TopCommand extends Command {
+public class TopAction extends Action {
 	
-	public TopCommand() {
+	public TopAction() {
 		options.addOption("v", "version", false, "show the version of this program");
 	}
 	
 	@Override
 	public void execute(String[] args) {
-		CommandLine cmd = parse(args);
+		CommandLine cmdLine = parse(args);
 		
 		// Show the version number
-		if (cmd.hasOption("version")) {
+		if (cmdLine.hasOption("version")) {
 			System.out.println("Current version: " + DcardCrawler.VERSION);
 			System.exit(0);
 		}
 		
-		// TODO: 根據指令產生對應 command 物件
+		// 根據指令產生對應 command 物件
+		String input = cmdLine.getArgs()[0];
+		Action cmd = null;
+		if (input.equals(FetchPostAction.COMMAND_NAME))
+			cmd = new FetchPostAction();
+		
+		if (cmd == null)
+			printHelpThenExit("unrecognized command");
 	}
 
 	@Override
@@ -39,8 +46,8 @@ public class TopCommand extends Command {
 		System.err.println("error: " + errorMsg);
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append("usage: " + COMMAND_PREFIX + "[command] [options] [arguments]\n");
-		sb.append("here are the available commands:\n");
+		sb.append("usage: " + COMMAND_PREFIX + "[action] [options] [arguments]\n");
+		sb.append("here are the available actions:\n");
 		sb.append("fetch-post: fetch posts from Dcard\n");
 		sb.append("fetch-images: fetch images in the downloaded posts\n");
 		
