@@ -21,12 +21,24 @@ public abstract class Action {
 	}
 	
 	protected CommandLine parse(String[] args) {
-		// Parse arguments
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
 		
 		try {
 			cmd = parser.parse(options, args);
+		} catch (ParseException e) {
+			printHelpThenExit(e.getLocalizedMessage());
+		}
+		
+		return cmd;
+	}
+	
+	protected CommandLine parsePartial(String[] args) {
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+		
+		try {
+			cmd = parser.parse(options, args, true);
 		} catch (ParseException e) {
 			printHelpThenExit(e.getLocalizedMessage());
 		}

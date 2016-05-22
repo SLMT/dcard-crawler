@@ -9,7 +9,7 @@ public class Test {
 
 	public static void main(String[] args) throws IOException {
 		Action action = new TopAction();
-		action.execute(new String[]{"fetch-post 10 /tmp"});
+		action.execute(new String[]{"fetch-post", "10", "/tmp/posts", "-r", "-d"});
 	}
 
 }

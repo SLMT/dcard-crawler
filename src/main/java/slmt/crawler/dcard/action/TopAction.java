@@ -18,7 +18,7 @@ public class TopAction extends Action {
 	
 	@Override
 	public void execute(String[] args) {
-		CommandLine cmdLine = parse(args);
+		CommandLine cmdLine = parsePartial(args);
 		
 		// Show the version number
 		if (cmdLine.hasOption("version")) {
@@ -57,8 +57,8 @@ public class TopAction extends Action {
 		sb.append('\n');
 		sb.append("usage: " + getCommandSyntax() + "\n");
 		sb.append("here are the available actions:\n");
-		sb.append("fetch-post: fetch posts from Dcard\n");
-		sb.append("fetch-images: fetch images in the downloaded posts\n");
+		sb.append(FetchPostAction.ACTION_NAME + ": fetch posts from Dcard\n");
+		sb.append(FetchImageAction.ACTION_NAME + ": fetch images in the downloaded posts\n");
 		
 		sb.append('\n');
 		sb.append("or, use '-v' to show the version number");

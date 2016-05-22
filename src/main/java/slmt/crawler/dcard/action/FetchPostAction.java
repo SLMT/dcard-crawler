@@ -15,7 +15,7 @@ public class FetchPostAction extends Action {
 		// create the Options
 		options.addOption("e", "ex-no-img-posts", false, "do not download posts that don't have images");
 		options.addOption("r", "redownload-exsiting", false, "re-download existing posts");
-		options.addOption("c", "count-redown-posts", false, "count re-downloaded posts");
+		options.addOption("d", "dont-count-redowns", false, "do not count re-downloaded posts");
 		options.addOption(Option.builder("f").longOpt("forum")
 				.hasArg().argName("forum alias").desc("specify a forum of Dcard").build());
 		options.addOption(Option.builder("g").longOpt("gender")
@@ -67,8 +67,8 @@ public class FetchPostAction extends Action {
 		if (cmdLine.hasOption("redownload-exsiting")) {
 			downloader.redownloadExistings(true);
 		}
-		if (cmdLine.hasOption("count-redown-posts")) {
-			downloader.countRedownPosts(true);
+		if (cmdLine.hasOption("dont-count-redowns")) {
+			downloader.dontCountRedownPosts(true);
 		}
 		
 		// Download posts

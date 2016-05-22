@@ -25,7 +25,7 @@ public class DcardPostDownloader {
 	// Options
 	private boolean onlyPostWithImage = false; // Not including the images in comments
 	private boolean redownloadExistings = false;
-	private boolean countRedownPosts = false;
+	private boolean dontCountRedownPosts = false;
 	private Gender targetGender = Gender.ALL; // Kerker
 	private DcardForum forum = DcardForum.ALL;
 	
@@ -40,22 +40,32 @@ public class DcardPostDownloader {
 	}
 	
 	public void onlyWithImage(boolean enable) {
+		if (logger.isLoggable(Level.INFO))
+			logger.info("only download the posts with images: " + enable);
 		onlyPostWithImage = enable;
 	}
 	
 	public void redownloadExistings(boolean enable) {
+		if (logger.isLoggable(Level.INFO))
+			logger.info("re-download existing posts: " + enable);
 		redownloadExistings = enable;
 	}
 	
-	public void countRedownPosts(boolean enable) {
-		countRedownPosts = enable;
+	public void dontCountRedownPosts(boolean enable) {
+		if (logger.isLoggable(Level.INFO))
+			logger.info("do not count re-downloaded posts: " + enable);
+		dontCountRedownPosts = enable;
 	}
 	
 	public void setTargetGender(Gender gender) {
+		if (logger.isLoggable(Level.INFO))
+			logger.info("only download the posts whose author is: " + gender.name());
 		targetGender = gender;
 	}
 	
 	public void setTargetForum(DcardForum forum) {
+		if (logger.isLoggable(Level.INFO))
+			logger.info("only download the posts in forum: " + forum.name());
 		this.forum = forum;
 	}
 	
@@ -66,18 +76,19 @@ public class DcardPostDownloader {
 	public void downloadPosts(int numOfPosts, int lastPostId) {
 		try {
 			List<PostInfo> postList;
-			int postCount = 0;
-			while (postCount < numOfPosts) {
+			int totalLoadCount = 0, newLoadCount = 0;
+			while ((dontCountRedownPosts && newLoadCount < numOfPosts) ||
+					(!dontCountRedownPosts && totalLoadCount < numOfPosts)) {
 				// Retrieve a post list
 				if (lastPostId < 0) {
 					// Retrieve the first post list
 					if (logger.isLoggable(Level.INFO))
-						logger.info("retrieving first 30 posts of " + forum + " forum");
+						logger.info("retrieving the list of first 30 posts of " + forum + " forum");
 					postList = DcardForumAPI.getPostList(forum);
 				} else {
 					// Retrieve posts before a given id
 					if (logger.isLoggable(Level.INFO))
-						logger.info("retrieving posts before no." + lastPostId + " in " + forum + " forum");
+						logger.info("retrieving the list of posts before no." + lastPostId + " in " + forum + " forum");
 					postList = DcardForumAPI.getPostList(forum, lastPostId);
 				}
 				
@@ -118,11 +129,14 @@ public class DcardPostDownloader {
 					waitForASecond();
 					
 					// Check if we need more
-					if (countRedownPosts || !existing)
-						postCount++;
-					if (postCount % REPORT_COUNT == 0 && logger.isLoggable(Level.INFO))
-						logger.info(postCount + " posts have been retrieved.");
-					if (postCount >= numOfPosts)
+					if (!existing)
+						newLoadCount++;
+					totalLoadCount++;
+					if (totalLoadCount % REPORT_COUNT == 0 && logger.isLoggable(Level.INFO))
+						logger.info(totalLoadCount + " posts have been downloaded. ("
+								+ (totalLoadCount - newLoadCount) + " posts are re-downloaded.)");
+					if ((dontCountRedownPosts && newLoadCount >= numOfPosts) ||
+							(!dontCountRedownPosts && totalLoadCount >= numOfPosts))
 						break;
 				}
 			}
