@@ -1,5 +1,7 @@
 # Dcard Crawler
 
+[![version](https://img.shields.io/badge/version-0.2.1-blue.svg)](https://github.com/SLMT/dcard-crawler/releases/tag/v0.2.1)
+
 這是一個用來抓取 [Dcard][1] 上公開資料的 Java 程式。
 
 ## 功能
